@@ -22,21 +22,24 @@ double degreesToRadians(double degrees) {
 }
 
 sqere_t sqere_calc(sqere_t sq) {
-    double cos_theta = cos(sq.theta * M_PI / 180);
-    double sin_theta = sin(sq.theta * M_PI / 180);
-    double diag = sq.size / 2;
+    double degree2rad = M_PI / 180;
+    double cos_theta = cos(sq.theta * degree2rad);
+    double sin_theta = sin(sq.theta * degree2rad);
+    double halfsize = sq.size / 2;
+    double mul_halfsize_cos = halfsize * cos_theta;
+    double mul_halfsize_sin = halfsize * sin_theta;
    
-    sq.x1 = sq.x + diag * cos_theta - diag * sin_theta;
-    sq.y1 = sq.y + diag * sin_theta + diag * cos_theta;
+    sq.x1 = sq.x + mul_halfsize_cos - mul_halfsize_sin;
+    sq.y1 = sq.y + mul_halfsize_sin + mul_halfsize_cos;
     
-    sq.x2 = sq.x - diag * cos_theta - diag * sin_theta;
-    sq.y2 = sq.y - diag * sin_theta + diag * cos_theta;
+    sq.x2 = sq.x - mul_halfsize_cos - mul_halfsize_sin;
+    sq.y2 = sq.y - mul_halfsize_sin + mul_halfsize_cos;
     
-    sq.x3 = sq.x - diag * cos_theta + diag * sin_theta;
-    sq.y3 = sq.y - diag * sin_theta - diag * cos_theta;
+    sq.x3 = sq.x - mul_halfsize_cos + mul_halfsize_sin;
+    sq.y3 = sq.y - mul_halfsize_sin - mul_halfsize_cos;
     
-    sq.x4 = sq.x + diag * cos_theta + diag * sin_theta;
-    sq.y4 = sq.y + diag * sin_theta - diag * cos_theta;
+    sq.x4 = sq.x + mul_halfsize_cos + mul_halfsize_sin;
+    sq.y4 = sq.y + mul_halfsize_sin - mul_halfsize_cos;
 
     return sq;
 }
