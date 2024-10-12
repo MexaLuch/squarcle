@@ -17,35 +17,43 @@ typedef struct {
     double y4;
 } sqere_t;
 
+double degreesToRadians(double degrees) {
+    return degrees * M_PI / 180;
+}
+
 sqere_t sqere_calc(sqere_t sq) {
-    sq.x1 = (sq.x + sq.size / 2.0) * cos(sq.theta);
-    sq.y1 = (sq.y + sq.size / 2.0) * sin(sq.theta);
-
-    sq.x2 = (sq.x + sq.size / 2.0) * cos(sq.theta);
-    sq.y2 = (sq.y - sq.size / 2.0) * sin(sq.theta);
-
-    sq.x3 = (sq.x - sq.size / 2.0) * cos(sq.theta);
-    sq.y3 = (sq.y + sq.size / 2.0) * sin(sq.theta);
-
-    sq.x4 = (sq.x - sq.size / 2.0) * cos(sq.theta);
-    sq.y4 = (sq.y - sq.size / 2.0) * sin(sq.theta);
+    double cos_theta = cos(sq.theta * M_PI / 180);
+    double sin_theta = sin(sq.theta * M_PI / 180);
+    double diag = sq.size / 2;
+   
+    sq.x1 = sq.x + diag * cos_theta - diag * sin_theta;
+    sq.y1 = sq.y + diag * sin_theta + diag * cos_theta;
+    
+    sq.x2 = sq.x - diag * cos_theta - diag * sin_theta;
+    sq.y2 = sq.y - diag * sin_theta + diag * cos_theta;
+    
+    sq.x3 = sq.x - diag * cos_theta + diag * sin_theta;
+    sq.y3 = sq.y - diag * sin_theta - diag * cos_theta;
+    
+    sq.x4 = sq.x + diag * cos_theta + diag * sin_theta;
+    sq.y4 = sq.y + diag * sin_theta - diag * cos_theta;
 
     return sq;
 }
 
-int main() {
+int main(void) {
     sqere_t sqere;
     sqere.size = 1;
     sqere.x = 0;
     sqere.y = 0;
-    sqere.theta = 0;
+    sqere.theta = 45;
 
     sqere = sqere_calc(sqere);
 
-    printf("A: (%.2f; %.2f)\n", sqere.x1, sqere.y1);
-    printf("B: (%.2f; %.2f)\n", sqere.x2, sqere.y2);
-    printf("C: (%.2f; %.2f)\n", sqere.x3, sqere.y3);
-    printf("D: (%.2f; %.2f)\n", sqere.x4, sqere.y4);
+    printf("(%.4f, %.4f)\n", sqere.x1, sqere.y1);
+    printf("(%.4f, %.4f)\n", sqere.x2, sqere.y2);
+    printf("(%.4f, %.4f)\n", sqere.x3, sqere.y3);
+    printf("(%.4f, %.4f)\n", sqere.x4, sqere.y4);
 
     return 0;
 }
