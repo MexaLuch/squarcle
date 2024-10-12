@@ -17,17 +17,11 @@ typedef struct {
     double y4;
 } sqere_t;
 
-double degreesToRadians(double degrees) {
-    return degrees * M_PI / 180;
-}
-
 sqere_t sqere_calc(sqere_t sq) {
     double degree2rad = M_PI / 180;
-    double cos_theta = cos(sq.theta * degree2rad);
-    double sin_theta = sin(sq.theta * degree2rad);
     double halfsize = sq.size / 2;
-    double mul_halfsize_cos = halfsize * cos_theta;
-    double mul_halfsize_sin = halfsize * sin_theta;
+    double mul_halfsize_cos = halfsize * cos(sq.theta * degree2rad);
+    double mul_halfsize_sin = halfsize * sin(sq.theta * degree2rad);
    
     sq.x1 = sq.x + mul_halfsize_cos - mul_halfsize_sin;
     sq.y1 = sq.y + mul_halfsize_sin + mul_halfsize_cos;
@@ -49,7 +43,7 @@ int main(void) {
     sqere.size = 1;
     sqere.x = 0;
     sqere.y = 0;
-    sqere.theta = 45;
+    sqere.theta = 0;
 
     sqere = sqere_calc(sqere);
 
