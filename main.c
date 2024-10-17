@@ -17,7 +17,8 @@ typedef struct {
 typedef unsigned long long int square_count_t;
 
 // Определение вершин квадрата по центру, размеру и углу поворота
-square_t square_calc(square_t sq) {
+square_t square_calc(square_t sq)
+{
     double degree2rad = M_PI / 180;
     double halfsize = sq.size / 2;
     double mul_halfsize_cos = halfsize * cos(sq.theta * degree2rad);
@@ -39,7 +40,8 @@ square_t square_calc(square_t sq) {
 }
 
 // Функция проверки, попадания вершины в круг
-void points_in_circle(square_t *square, square_count_t square_count) {
+void points_in_circle(square_t *square, square_count_t square_count)
+{
     for (square_count_t i = 0; i < square_count; i++)
     {
         double r1 = sqrt((square[i].x1 * square[i].x1) + (square[i].y1 * square[i].y1));
@@ -59,8 +61,8 @@ void points_in_circle(square_t *square, square_count_t square_count) {
 }
 
 // Функция проверки, пересечения квадратов
-char square_intersection(square_t square_1, square_t square_2) {
-
+char square_intersection(square_t square_1, square_t square_2)
+{
     double square_2_points[] = {square_2.x1, square_2.y1,
                                 square_2.x2, square_2.y2,
                                 square_2.x3, square_2.y3,
@@ -78,22 +80,35 @@ char square_intersection(square_t square_1, square_t square_2) {
         double rotatedX = x_translocated * cos(-radians) - y_translocated * sin(-radians);
         double rotatedY = x_translocated * sin(-radians) + y_translocated * cos(-radians);
 
-        // Проверка, находится ли точка вне неповернутого квадрата
+        // Проверка, находится ли точка внутри неповернутого квадрата
         double halfSide = square_1.size / 2.0;
-        if (fabs(rotatedX) > halfSide || fabs(rotatedY) > halfSide) {
-            return 0;
+        if (fabs(rotatedX) < halfSide && fabs(rotatedY) < halfSide) {
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 
 // Функция проверки, пересечения квадратов
-void square_validation(square_t *square, square_count_t square_count) {
+void square_validation(square_t *square, square_count_t square_count)
+{
     double diag = sqrt(2)*square[1].size;
     for (square_count_t i = 0; i < square_count; i++)
     {
+        // Скип, если квадрат находится за кругом
+        // if (!square[i].in_circle)
+        // {
+        //     continue;
+        // }
+        
         for (square_count_t j = 0; j < square_count; j++)
         {
+            // Скип, если квадрат находится за кругом
+            // if (!square[j].in_circle)
+            // {
+            //     continue;
+            // }
+
             // Установлен ли квадрат j
             if (square[j].valid)
             {
@@ -101,7 +116,7 @@ void square_validation(square_t *square, square_count_t square_count) {
                 if (sqrt(pow(square[i].x - square[j].x, 2) + pow(square[i].y - square[j].y, 2)) < diag)
                 {
                     //Пересекаются ли они?
-                    if (square_intersection(square[i], square[j]))
+                    if (square_intersection(square[i], square[j]) || square_intersection(square[j], square[i]))
                     {
                         break;
                     }
@@ -113,6 +128,7 @@ void square_validation(square_t *square, square_count_t square_count) {
             {
                 square[i].valid = 1;
             }
+
         }
     }
 }
@@ -120,7 +136,7 @@ void square_validation(square_t *square, square_count_t square_count) {
 int main(void) {
     //srand(11);       //TODO: ДОПИЛИТЬ ВРЕМЯ
 
-    double square_size = 0.25;
+    double square_size = 0.1;
     square_count_t square_count = (int) (((1*1) / (square_size*square_size) ) * 1000);  // замостить квадрат 1x1 1000 раз квадратами размером size*size
 
     printf("All:%d\n",square_count);
@@ -150,23 +166,29 @@ int main(void) {
         } 
     }
 
+    printf("in_circle:%d\n",in_circle_count);
+    printf("PI:%f\n\n", 4.0 * in_circle_count / square_count);
+
     square_validation(square, square_count);
 
     square_count_t valid_squers = 0;
+    square_count_t valid_in_circle_squers = 0;
     for (square_count_t i = 0; i < square_count; i++)
     {
         if (1 == square[i].valid)
         {
             valid_squers++;
-        } 
+        }
+
+        if ((1 == square[i].valid) && (1 == square[i].in_circle))
+        {
+            valid_in_circle_squers++;
+        }
+
     }
 
-
-    printf("in_circle:%d\n",in_circle_count);
-    printf("PI:%f\n\n", 4.0 * in_circle_count / square_count);
-
-    printf("valid_squers:%d\n", valid_squers);
-    printf("S:%f\n", (double)valid_squers * (square_size*square_size));
+    printf("valid_squers:%d\n", valid_in_circle_squers);
+    printf("S:%f\n", (double)valid_in_circle_squers * (square_size*square_size));
 
 
     free(square);
