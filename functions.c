@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 #include "functions.h"
 
 // Определение вершин квадрата по центру, размеру и углу поворота
@@ -42,6 +43,7 @@ void points_in_circle(square_t *square, square_count_t square_count)
         {
             square[i].in_circle = 0;
         }
+        
     }
 }
 
@@ -113,7 +115,6 @@ void square_validation(square_t *square, square_count_t square_count)
             {
                 square[i].valid = 1;
             }
-
         }
     }
 }
